@@ -22,12 +22,18 @@ variable "user_home_path" {}
 provider "aws" {
   access_key = "${var.aws_access_key}"
   secret_key = "${var.aws_secret_key}"
-  region     = "us-west-2"
+  region     = "ap-southeast-2"
 }
 
 ##################################################################################
 # RESOURCES
 ##################################################################################
+
+#Random ID for S3 buckets
+resource "random_integer" "rand" {
+  min = 10000
+  max = 99999
+}
 resource "aws_dynamodb_table" "terraform_statelock" {
   name           = "${var.aws_dynamodb_table}"
   read_capacity  = 20
@@ -41,7 +47,7 @@ resource "aws_dynamodb_table" "terraform_statelock" {
 }
 
 resource "aws_s3_bucket" "ddtnet" {
-  bucket = "${var.aws_networking_bucket}"
+  bucket = "${var.aws_networking_bucket}-${random_integer.rand.result}"
   acl    = "private"
   force_destroy = true
   
@@ -60,7 +66,7 @@ resource "aws_s3_bucket" "ddtnet" {
                 "AWS": "${aws_iam_user.sallysue.arn}"
             },
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::${var.aws_networking_bucket}/*"
+            "Resource": "arn:aws:s3:::${var.aws_networking_bucket}-${random_integer.rand.result}/*"
         },
         {
             "Sid": "",
@@ -70,8 +76,8 @@ resource "aws_s3_bucket" "ddtnet" {
             },
             "Action": "s3:*",
             "Resource": [
-                "arn:aws:s3:::${var.aws_networking_bucket}",
-                "arn:aws:s3:::${var.aws_networking_bucket}/*"
+                "arn:aws:s3:::${var.aws_networking_bucket}-${random_integer.rand.result}",
+                "arn:aws:s3:::${var.aws_networking_bucket}-${random_integer.rand.result}/*"
             ]
         }
     ]
@@ -80,7 +86,7 @@ EOF
 }
 
 resource "aws_s3_bucket" "ddtapp" {
-  bucket = "${var.aws_application_bucket}"
+  bucket = "${var.aws_application_bucket}-${random_integer.rand.result}"
   acl    = "private"
   force_destroy = true
 
@@ -98,7 +104,7 @@ resource "aws_s3_bucket" "ddtapp" {
                 "AWS": "${aws_iam_user.marymoe.arn}"
             },
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::${var.aws_application_bucket}/*"
+            "Resource": "arn:aws:s3:::${var.aws_application_bucket}-${random_integer.rand.result}/*"
         },
         {
             "Sid": "",
@@ -108,8 +114,8 @@ resource "aws_s3_bucket" "ddtapp" {
             },
             "Action": "s3:*",
             "Resource": [
-                "arn:aws:s3:::${var.aws_application_bucket}",
-                "arn:aws:s3:::${var.aws_application_bucket}/*"
+                "arn:aws:s3:::${var.aws_application_bucket}-${random_integer.rand.result}",
+                "arn:aws:s3:::${var.aws_application_bucket}-${random_integer.rand.result}/*"
             ]
         }
     ]

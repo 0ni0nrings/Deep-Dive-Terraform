@@ -5,14 +5,14 @@
 provider "aws" {
   access_key = "${var.aws_access_key}"
   secret_key = "${var.aws_secret_key}"
-  region     = "us-west-2"
+  region     = "ap-southeast-2"
 }
 
 ##################################################################################
 # DATA
 ##################################################################################
 
-data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {} # pulling in AZs available in the region
 
 ##################################################################################
 # RESOURCES
@@ -33,7 +33,7 @@ module "vpc" {
   create_database_subnet_group = false
 
   
-  tags {
+  tags = {
   }
 }
 
