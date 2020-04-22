@@ -1,0 +1,3 @@
+terraform init --var-file="..\terraform.tfvars" --backend-config="dynamodb_table=ddt-tfstatelock" --backend-config="bucket=ddt-networking-30560" --backend-config="profile=marymoe"
+terraform plan --var-file="..\terraform.tfvars" -out networking.tfplan
+terraform destroy --auto-approve --var-file="../terraform.tfvars"

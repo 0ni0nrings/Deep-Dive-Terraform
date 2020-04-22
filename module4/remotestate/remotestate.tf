@@ -35,7 +35,7 @@ provider "aws" {
 data "template_file" "application_bucket_policy" {
   template = "${file("templates/bucket_policy.tpl")}"
 
-  vars {
+  vars = {
     read_only_user_arn   = "${aws_iam_user.marymoe.arn}"
     full_access_user_arn = "${aws_iam_user.sallysue.arn}"
     s3_bucket            = "${var.aws_application_bucket}"
@@ -45,7 +45,7 @@ data "template_file" "application_bucket_policy" {
 data "template_file" "network_bucket_policy" {
   template = "${file("templates/bucket_policy.tpl")}"
 
-  vars {
+  vars = {
     read_only_user_arn   = "${aws_iam_user.sallysue.arn}"
     full_access_user_arn = "${aws_iam_user.marymoe.arn}"
     s3_bucket            = "${var.aws_networking_bucket}"
@@ -55,7 +55,7 @@ data "template_file" "network_bucket_policy" {
 data "template_file" "mary_moe_policy" {
   template = "${file("templates/user_policy.tpl")}"
 
-  vars {
+  vars = {
     s3_rw_bucket       = "${var.aws_networking_bucket}"
     s3_ro_bucket       = "${var.aws_application_bucket}"
     dynamodb_table_arn = "${aws_dynamodb_table.terraform_statelock.arn}"
@@ -65,7 +65,7 @@ data "template_file" "mary_moe_policy" {
 data "template_file" "sally_sue_policy" {
   template = "${file("templates/user_policy.tpl")}"
 
-  vars {
+  vars = {
     s3_rw_bucket       = "${var.aws_application_bucket}"
     s3_ro_bucket       = "${var.aws_networking_bucket}"
     dynamodb_table_arn = "${aws_dynamodb_table.terraform_statelock.arn}"
